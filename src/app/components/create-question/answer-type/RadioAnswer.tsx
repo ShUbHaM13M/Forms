@@ -1,6 +1,6 @@
 import { CloseOutlined } from "@ant-design/icons";
-import { Radio, Space, Input, Row, Col, Table, Button } from "antd";
-import { Fragment, useCallback, useState } from "react";
+import { Radio, Space, Input, Row, Col, Table, Button, Tooltip } from "antd";
+import { useCallback, useState } from "react";
 
 const RadioAnswer = () => {
   const [options, setOptions] = useState<string[]>(["Option 1"]);
@@ -31,16 +31,19 @@ const RadioAnswer = () => {
           <Col flex="auto">
             <Input
               onChange={(e) => onOptionLabelChange(e.currentTarget.value, key)}
+              onKeyDown={(e) => e.key === "Enter" && onAddOption()}
               value={label}
             />
           </Col>
           {options.length > 1 ? (
             <Col flex="none">
-              <Button
-                type="text"
-                icon={<CloseOutlined />}
-                onClick={() => onRemoveOption(key)}
-              />
+              <Tooltip title="remove" trigger="hover">
+                <Button
+                  type="text"
+                  icon={<CloseOutlined />}
+                  onClick={() => onRemoveOption(key)}
+                />
+              </Tooltip>
             </Col>
           ) : null}
         </Row>
@@ -55,11 +58,13 @@ const RadioAnswer = () => {
             <Input placeholder="Other..." disabled />
           </Col>
           <Col flex="none">
-            <Button
-              type="text"
-              icon={<CloseOutlined />}
-              onClick={() => setOtherAdded(false)}
-            />
+            <Tooltip title="remove" trigger="hover">
+              <Button
+                type="text"
+                icon={<CloseOutlined />}
+                onClick={() => setOtherAdded(false)}
+              />
+            </Tooltip>
           </Col>
         </Row>
       ) : null}
