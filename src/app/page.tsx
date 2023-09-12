@@ -2,6 +2,7 @@
 
 import {
   Button,
+  Col,
   ConfigProvider,
   Form,
   Layout,
@@ -50,36 +51,34 @@ export default function Home() {
   return (
     <ConfigProvider theme={theme}>
       <Layout className="layout">
-        <Layout.Header>
+        {/* <Layout.Header>
           <Typography.Title level={3} style={{ color: "white" }}>
             Create a new form
           </Typography.Title>
-        </Layout.Header>
+        </Layout.Header> */}
         <Layout.Content className="container">
-          <Form
-            style={{
-              width: "100%",
-              maxWidth: 450,
-            }}
-            form={form}
-          >
+          <Form form={form}>
             <Space direction="vertical" size="middle" style={{ width: "100%" }}>
               {questions.map((question) => (
                 <Question key={question.title} {...question} />
               ))}
 
-              <Space direction="horizontal">
-                <Button
-                  htmlType="reset"
-                  type="default"
-                  onClick={() => form.resetFields()}
-                >
-                  Reset
-                </Button>
-                <Button htmlType="submit" type="primary">
-                  Submit
-                </Button>
-              </Space>
+              <Row gutter={8} justify="end">
+                <Col>
+                  <Button
+                    htmlType="reset"
+                    type="default"
+                    onClick={() => form.resetFields()}
+                  >
+                    Reset
+                  </Button>
+                </Col>
+                <Col>
+                  <Button htmlType="submit" type="primary">
+                    Submit
+                  </Button>
+                </Col>
+              </Row>
             </Space>
           </Form>
         </Layout.Content>
