@@ -19,7 +19,7 @@ interface AnswerTypeOptions {
   inputProps: RequiredAttributes<InputProps, "name">;
 }
 
-type AnswerType = AnswerTypeShort | AnswerTypeLong | AnswerTypeOptions;
+export type AnswerType = AnswerTypeShort | AnswerTypeLong | AnswerTypeOptions;
 
 export type QuestionType = {
   title: string;
