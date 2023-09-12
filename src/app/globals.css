@@ -25,7 +25,20 @@ body {
 
 .card {
   transition: border-color 0.2s;
+  position: relative;
+  overflow: hidden;
 }
-.card:focus-within {
-  border: 1px solid #1677ff;
+.card::before {
+  content: "";
+  position: absolute;
+  height: 4px;
+  width: 100%;
+  background-color: #1677ff;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+.card:focus-within::before {
+  opacity: 1;
 }
