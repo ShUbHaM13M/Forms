@@ -44,7 +44,9 @@ const CreateQuestion = ({ titlePlaceholder }: CreateQuestionProps) => {
       title={
         <Row gutter={[8, 16]}>
           <Col span={16}>
-            <InputWithToolbar inputProps={{ placeholder: titlePlaceholder }} />
+            <InputWithToolbar
+              inputProps={{ placeholder: titlePlaceholder || "Enter question" }}
+            />
           </Col>
           <Col span={8}>
             <AnswerOptions onChange={onAnswerTypeOptionChange} />
