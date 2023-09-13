@@ -1,4 +1,4 @@
-import { Card, Col, Input, Radio, Row, Select, Space } from "antd";
+import { Card, Col, Row, Select, Space } from "antd";
 import { InputWithToolbar } from "..";
 import { useCallback, useState } from "react";
 import { CreateQuestionProps, answerComponentMap, answerTypes } from "./utils";
