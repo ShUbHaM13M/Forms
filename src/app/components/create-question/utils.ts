@@ -1,5 +1,10 @@
 import { AnswerType } from "@/app/global";
-import { ShortAnswer, Paragraph, RadioAnswer } from "./answer-type";
+import {
+  ShortAnswer,
+  Paragraph,
+  RadioAnswer,
+  CheckboxAnswer,
+} from "./answer-type";
 
 export type CreateQuestionProps = {
   titlePlaceholder?: string;
@@ -25,10 +30,15 @@ export const answerTypes: AnswerOptionType[] = [
     value: "radio-answer",
     label: "Multiple choice",
   },
+  {
+    value: "checkbox-answer",
+    label: "Checkboxes",
+  },
 ];
 
 export const answerComponentMap: { [key in AnswerType]: () => JSX.Element } = {
   "short-answer": ShortAnswer,
   "long-answer": Paragraph,
   "radio-answer": RadioAnswer,
+  "checkbox-answer": CheckboxAnswer,
 };
