@@ -1,11 +1,11 @@
 "use client";
 
-import { Button, Card, Divider, Layout, Space } from "antd";
+import { Button, Layout, Space } from "antd";
 import CreateQuestion from "../components/create-question";
 import { EyeOutlined } from "@ant-design/icons";
-import { InputWithToolbar } from "../components";
 import CreateFormProvider from "./CreateFormContext";
 import FormMetaCard from "./FormMetaCard";
+import ToolBar from "./Toolbar";
 
 const CreateForm = () => {
   return (
@@ -34,6 +34,8 @@ const CreateForm = () => {
             <FormMetaCard />
             <CreateQuestion />
           </Space>
+
+          <ToolBar />
         </Layout.Content>
       </Layout>
     </CreateFormProvider>
