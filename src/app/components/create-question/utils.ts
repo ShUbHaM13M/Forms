@@ -7,8 +7,8 @@ import {
 } from "./answer-type";
 
 export type CreateQuestionProps = {
-  titlePlaceholder?: string;
-  withAnswerOptions?: boolean;
+  title?: string;
+  answerType?: AnswerType;
 };
 
 export type AnswerOptionType = {
