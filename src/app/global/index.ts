@@ -3,3 +3,9 @@ export type AnswerType =
   | "long-answer"
   | "radio-answer"
   | "checkbox-answer";
+
+export type Question = {
+  id: string;
+  title?: string;
+  answerType: AnswerType;
+};

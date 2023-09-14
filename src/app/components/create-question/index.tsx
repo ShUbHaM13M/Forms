@@ -1,18 +1,28 @@
-import { Card, Col, Row, Select, Space } from "antd";
-import { InputWithToolbar } from "..";
+import { Button, Card, Col, Divider, Input, Row, Select, Space } from "antd";
 import { useCallback, useState } from "react";
-import { CreateQuestionProps, answerComponentMap, answerTypes } from "./utils";
-import { AnswerType } from "@/app/global";
+import { answerComponentMap, answerTypes } from "./utils";
+import { AnswerType, Question } from "@/app/global";
+import {
+  CreateFormActionKind,
+  useCreateFormData,
+} from "@/app/create-form/CreateFormContext";
+import {
+  CopyOutlined,
+  DeleteOutlined,
+  EllipsisOutlined,
+} from "@ant-design/icons";
 
 const AnswerOptions = ({
   onChange,
+  defaultValue,
 }: {
   onChange: (answerType: AnswerType) => void;
+  defaultValue: AnswerType;
 }) => {
   return (
     <Select
       style={{ width: "100%" }}
-      defaultValue="short-answer"
+      defaultValue={defaultValue}
       onChange={onChange}
     >
       {answerTypes.map(({ label, value, icon }) => (
@@ -27,15 +37,20 @@ const AnswerOptions = ({
   );
 };
 
-const CreateQuestion = ({ titlePlaceholder }: CreateQuestionProps) => {
-  const [selectedAnswerType, setSelectedAnswerType] =
-    useState<AnswerType>("short-answer");
+const CreateQuestion = ({ id, title, answerType }: Question) => {
+  const { dispatchFormData } = useCreateFormData();
 
   const onAnswerTypeOptionChange = useCallback((answerType: AnswerType) => {
-    setSelectedAnswerType(answerType);
+    dispatchFormData({
+      type: CreateFormActionKind.UPDATE_QUESTION_ANSWER_TYPE,
+      payload: {
+        id,
+        answerType,
+      },
+    });
   }, []);
 
-  const AnswerComponent = answerComponentMap[selectedAnswerType];
+  const AnswerComponent = answerComponentMap[answerType || "short-answer"];
 
   return (
     <Card
@@ -44,17 +59,67 @@ const CreateQuestion = ({ titlePlaceholder }: CreateQuestionProps) => {
       title={
         <Row gutter={[8, 16]}>
           <Col span={16}>
-            <InputWithToolbar
-              inputProps={{ placeholder: titlePlaceholder || "Enter question" }}
+            <Input
+              placeholder="Enter question"
+              value={title || ""}
+              onChange={(e) => {
+                dispatchFormData({
+                  type: CreateFormActionKind.UPDATE_QUESTION_TITLE,
+                  payload: {
+                    id,
+                    title: e.currentTarget.value,
+                  },
+                });
+              }}
             />
           </Col>
           <Col span={8}>
-            <AnswerOptions onChange={onAnswerTypeOptionChange} />
+            <AnswerOptions
+              defaultValue={answerType || "short-answer"}
+              onChange={onAnswerTypeOptionChange}
+            />
           </Col>
         </Row>
       }
     >
-      <AnswerComponent />
+      <Card.Grid hoverable={false} style={{ width: "100%" }}>
+        <AnswerComponent />
+      </Card.Grid>
+      <Card.Grid hoverable={false} style={{ width: "100%", padding: 16 }}>
+        {/* FIXME: Just a placeholder for now */}
+        <Row>
+          <Col flex="auto" />
+          <Col>
+            <Button type="text" icon={<CopyOutlined />} key="copy" />
+          </Col>
+
+          <Col style={{ display: "flex", alignItems: "center" }}>
+            <Divider type="vertical" />
+          </Col>
+
+          <Col>
+            <Button
+              onClick={() =>
+                dispatchFormData({
+                  type: CreateFormActionKind.DELETE_QUESTION,
+                  payload: { id },
+                })
+              }
+              type="text"
+              icon={<DeleteOutlined />}
+              key="delete"
+            />
+          </Col>
+
+          <Col style={{ display: "flex", alignItems: "center" }}>
+            <Divider type="vertical" />
+          </Col>
+
+          <Col>
+            <Button type="text" icon={<EllipsisOutlined />} key="ellipsis" />
+          </Col>
+        </Row>
+      </Card.Grid>
     </Card>
   );
 };
