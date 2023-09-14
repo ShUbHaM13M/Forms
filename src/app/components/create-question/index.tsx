@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Button, Card, Col, Divider, Input, Row, Select, Space } from "antd";
-import { useCallback, useState } from "react";
+import { ChangeEvent, memo, useCallback, useMemo, useState } from "react";
 import { answerComponentMap, answerTypes } from "./utils";
 import { AnswerType, Question } from "@/app/global";
 import {
@@ -37,20 +38,46 @@ const AnswerOptions = ({
   );
 };
 
-const CreateQuestion = ({ id, title, answerType }: Question) => {
-  const { dispatchFormData } = useCreateFormData();
+const CreateQuestion = ({ index }: { index: number }) => {
+  const { dispatchFormData, formData } = useCreateFormData();
+
+  const question = useMemo(
+    () => formData.questions[index],
+    [formData.questions, index]
+  );
+
+  const updateQuestionTitle = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      dispatchFormData({
+        type: CreateFormActionKind.UPDATE_QUESTION_TITLE,
+        payload: {
+          id: question.id,
+          title: e.currentTarget.value,
+        },
+      });
+    },
+    []
+  );
 
   const onAnswerTypeOptionChange = useCallback((answerType: AnswerType) => {
     dispatchFormData({
       type: CreateFormActionKind.UPDATE_QUESTION_ANSWER_TYPE,
       payload: {
-        id,
+        id: question.id,
         answerType,
       },
     });
   }, []);
 
-  const AnswerComponent = answerComponentMap[answerType || "short-answer"];
+  const deleteQuestion = useCallback(() => {
+    dispatchFormData({
+      type: CreateFormActionKind.DELETE_QUESTION,
+      payload: { id: question.id },
+    });
+  }, []);
+
+  const AnswerComponent =
+    answerComponentMap[question.answerType || "short-answer"];
 
   return (
     <Card
@@ -61,21 +88,13 @@ const CreateQuestion = ({ id, title, answerType }: Question) => {
           <Col span={16}>
             <Input
               placeholder="Enter question"
-              value={title || ""}
-              onChange={(e) => {
-                dispatchFormData({
-                  type: CreateFormActionKind.UPDATE_QUESTION_TITLE,
-                  payload: {
-                    id,
-                    title: e.currentTarget.value,
-                  },
-                });
-              }}
+              value={question.title || ""}
+              onChange={updateQuestionTitle}
             />
           </Col>
           <Col span={8}>
             <AnswerOptions
-              defaultValue={answerType || "short-answer"}
+              defaultValue={question.answerType || "short-answer"}
               onChange={onAnswerTypeOptionChange}
             />
           </Col>
@@ -99,12 +118,7 @@ const CreateQuestion = ({ id, title, answerType }: Question) => {
 
           <Col>
             <Button
-              onClick={() =>
-                dispatchFormData({
-                  type: CreateFormActionKind.DELETE_QUESTION,
-                  payload: { id },
-                })
-              }
+              onClick={deleteQuestion}
               type="text"
               icon={<DeleteOutlined />}
               key="delete"
@@ -124,4 +138,4 @@ const CreateQuestion = ({ id, title, answerType }: Question) => {
   );
 };
 
-export default CreateQuestion;
+export default memo(CreateQuestion);

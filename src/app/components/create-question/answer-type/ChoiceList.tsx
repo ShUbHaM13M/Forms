@@ -112,7 +112,7 @@ const ChoiceList = ({ ChoiceType }: { ChoiceType: React.ReactNode }) => {
                   style={{ paddingInline: 0 }}
                   type="link"
                 >
-                  add "Other"
+                  add &quot;Other&quot;
                 </Button>
               </>
             )}
