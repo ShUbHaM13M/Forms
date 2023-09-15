@@ -1,13 +1,14 @@
-import { useCreateFormData } from "@/app/create-form/CreateFormContext";
 import { CreateQuestion } from "..";
 import { Space } from "antd";
+import useCreateFormStore from "@/app/create-form/CreateFormStore";
 
 const QuestionList = () => {
-  const { formData } = useCreateFormData();
+  const questions = useCreateFormStore((state) => state.questions);
+
   return (
     <Space direction="vertical" style={{ width: "100%" }}>
-      {formData.questions.map((question, index) => (
-        <CreateQuestion key={question.id} index={index} />
+      {questions.map((question) => (
+        <CreateQuestion key={question.id} {...question} />
       ))}
     </Space>
   );
