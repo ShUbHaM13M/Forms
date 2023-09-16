@@ -4,14 +4,11 @@ import { ChangeEvent, memo, useCallback, useMemo, useState } from "react";
 import { answerComponentMap, answerTypes } from "./utils";
 import { AnswerType, Question } from "@/app/global";
 import {
-  CreateFormActionKind,
-  useCreateFormData,
-} from "@/app/create-form/CreateFormContext";
-import {
   CopyOutlined,
   DeleteOutlined,
   EllipsisOutlined,
 } from "@ant-design/icons";
+import useCreateFormStore from "@/app/create-form/CreateFormStore";
 
 const AnswerOptions = ({
   onChange,
@@ -38,46 +35,31 @@ const AnswerOptions = ({
   );
 };
 
-const CreateQuestion = ({ index }: { index: number }) => {
-  const { dispatchFormData, formData } = useCreateFormData();
-
-  const question = useMemo(
-    () => formData.questions[index],
-    [formData.questions, index]
+const CreateQuestion = ({ title, id, answerType }: Question) => {
+  const updateQuestionTitle = useCreateFormStore(
+    (state) => state.updateQuestionTitle
   );
+  const updateAnswerType = useCreateFormStore(
+    (state) => state.updateQuestionAnswerType
+  );
+  const deleteQuestion = useCreateFormStore((state) => state.deleteQuestion);
 
-  const updateQuestionTitle = useCallback(
+  const handleUpdateQuestionTitle = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      dispatchFormData({
-        type: CreateFormActionKind.UPDATE_QUESTION_TITLE,
-        payload: {
-          id: question.id,
-          title: e.currentTarget.value,
-        },
-      });
+      updateQuestionTitle(id, e.currentTarget.value);
     },
     []
   );
 
-  const onAnswerTypeOptionChange = useCallback((answerType: AnswerType) => {
-    dispatchFormData({
-      type: CreateFormActionKind.UPDATE_QUESTION_ANSWER_TYPE,
-      payload: {
-        id: question.id,
-        answerType,
-      },
-    });
+  const handleAnswerTypeChange = useCallback((answerType: AnswerType) => {
+    updateAnswerType(id, answerType);
   }, []);
 
-  const deleteQuestion = useCallback(() => {
-    dispatchFormData({
-      type: CreateFormActionKind.DELETE_QUESTION,
-      payload: { id: question.id },
-    });
+  const handleDeleteQuestion = useCallback(() => {
+    deleteQuestion(id);
   }, []);
 
-  const AnswerComponent =
-    answerComponentMap[question.answerType || "short-answer"];
+  const AnswerComponent = answerComponentMap[answerType || "short-answer"];
 
   return (
     <Card
@@ -88,14 +70,14 @@ const CreateQuestion = ({ index }: { index: number }) => {
           <Col span={16}>
             <Input
               placeholder="Enter question"
-              value={question.title || ""}
-              onChange={updateQuestionTitle}
+              value={title || ""}
+              onChange={handleUpdateQuestionTitle}
             />
           </Col>
           <Col span={8}>
             <AnswerOptions
-              defaultValue={question.answerType || "short-answer"}
-              onChange={onAnswerTypeOptionChange}
+              defaultValue={answerType || "short-answer"}
+              onChange={handleAnswerTypeChange}
             />
           </Col>
         </Row>
@@ -118,7 +100,7 @@ const CreateQuestion = ({ index }: { index: number }) => {
 
           <Col>
             <Button
-              onClick={deleteQuestion}
+              onClick={handleDeleteQuestion}
               type="text"
               icon={<DeleteOutlined />}
               key="delete"
