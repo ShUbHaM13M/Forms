@@ -1,7 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Button, Card, Col, Divider, Input, Row, Select, Space } from "antd";
-import { ChangeEvent, memo, useCallback, useMemo, useState } from "react";
-import { answerComponentMap, answerTypes } from "./utils";
+import {
+  Button,
+  Card,
+  Col,
+  Divider,
+  Input,
+  Popover,
+  Row,
+  Select,
+  Space,
+} from "antd";
+import { ChangeEvent, memo, useCallback } from "react";
+import { answerMap } from "./utils";
 import { AnswerType, Question } from "@/app/global";
 import {
   CopyOutlined,
@@ -23,7 +33,7 @@ const AnswerOptions = ({
       defaultValue={defaultValue}
       onChange={onChange}
     >
-      {answerTypes.map(({ label, value, icon }) => (
+      {Object.entries(answerMap).map(([value, { label, icon }]) => (
         <Select.Option key={value} value={value} label={label}>
           <Space>
             {icon}
@@ -59,7 +69,7 @@ const CreateQuestion = ({ title, id, answerType }: Question) => {
     deleteQuestion(id);
   }, []);
 
-  const AnswerComponent = answerComponentMap[answerType || "short-answer"];
+  const AnswerComponent = answerMap[answerType || "short-answer"].Component;
 
   return (
     <Card
@@ -86,7 +96,10 @@ const CreateQuestion = ({ title, id, answerType }: Question) => {
       <Card.Grid hoverable={false} style={{ width: "100%" }}>
         <AnswerComponent />
       </Card.Grid>
-      <Card.Grid hoverable={false} style={{ width: "100%", padding: 16 }}>
+      <Card.Grid
+        hoverable={false}
+        style={{ width: "100%", padding: 16, paddingBlock: 8 }}
+      >
         {/* FIXME: Just a placeholder for now */}
         <Row>
           <Col flex="auto" />
@@ -112,7 +125,13 @@ const CreateQuestion = ({ title, id, answerType }: Question) => {
           </Col>
 
           <Col>
-            <Button type="text" icon={<EllipsisOutlined />} key="ellipsis" />
+            <Popover
+              placement="topRight"
+              title="Options"
+              content={"Not yet implemented"}
+            >
+              <Button type="text" icon={<EllipsisOutlined />} key="ellipsis" />
+            </Popover>
           </Col>
         </Row>
       </Card.Grid>

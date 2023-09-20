@@ -4,6 +4,9 @@ import {
   Paragraph,
   RadioAnswer,
   CheckboxAnswer,
+  DateAnswer,
+  TimeAnswer,
+  ColorAnswer,
 } from "./answer-type";
 
 export type CreateQuestionProps = {
@@ -17,28 +20,28 @@ export type AnswerOptionType = {
   icon?: React.ReactNode;
 };
 
-export const answerTypes: AnswerOptionType[] = [
-  {
-    value: "short-answer",
-    label: "Short answer",
-  },
-  {
-    value: "long-answer",
-    label: "Paragraph",
-  },
-  {
-    value: "radio-answer",
-    label: "Multiple choice",
-  },
-  {
-    value: "checkbox-answer",
-    label: "Checkboxes",
-  },
-];
+type AnswerMap = {
+  label: string;
+  icon?: null; // FIXME: null for now
+  Component: () => JSX.Element;
+};
 
-export const answerComponentMap: { [key in AnswerType]: () => JSX.Element } = {
-  "short-answer": ShortAnswer,
-  "long-answer": Paragraph,
-  "radio-answer": RadioAnswer,
-  "checkbox-answer": CheckboxAnswer,
+export const answerMap: {
+  [key in AnswerType]: AnswerMap;
+} = {
+  "short-answer": { label: "Short answer", Component: ShortAnswer },
+  "long-answer": { label: "Paragraph", Component: Paragraph },
+  "radio-answer": { label: "Single choice", Component: RadioAnswer },
+  "checkbox-answer": { label: "Checkboxes", Component: CheckboxAnswer },
+  "date-answer": { label: "Date", Component: DateAnswer },
+  "time-answer": {
+    label: "Time",
+    icon: undefined,
+    Component: TimeAnswer,
+  },
+  "color-answer": {
+    label: "Color",
+    icon: undefined,
+    Component: ColorAnswer,
+  },
 };
