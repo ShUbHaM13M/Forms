@@ -1,17 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import {
-  Button,
-  Card,
-  Col,
-  Divider,
-  Input,
-  Popover,
-  Row,
-  Select,
-  Space,
-} from "antd";
-import { ChangeEvent, memo, useCallback } from "react";
-import { answerMap } from "./utils";
+import { Button, Card, Col, Divider, Input, Popover, Row } from "antd";
+import { ChangeEvent, memo, useCallback, useState } from "react";
+import { answerMap, validationOptionMap } from "./utils";
 import { AnswerType, Question } from "@/app/global";
 import {
   CopyOutlined,
@@ -19,33 +9,23 @@ import {
   EllipsisOutlined,
 } from "@ant-design/icons";
 import useCreateFormStore from "@/app/create-form/CreateFormStore";
+import AnswerTypeSelect from "./AnswerTypeSelect";
+import AnswerOptionDropdown from "./AnswerOptionDropdown";
 
-const AnswerOptions = ({
-  onChange,
-  defaultValue,
-}: {
-  onChange: (answerType: AnswerType) => void;
-  defaultValue: AnswerType;
-}) => {
-  return (
-    <Select
-      style={{ width: "100%" }}
-      defaultValue={defaultValue}
-      onChange={onChange}
-    >
-      {Object.entries(answerMap).map(([value, { label, icon }]) => (
-        <Select.Option key={value} value={value} label={label}>
-          <Space>
-            {icon}
-            {label}
-          </Space>
-        </Select.Option>
-      ))}
-    </Select>
-  );
-};
+const CreateQuestion = ({
+  title,
+  id,
+  answerType,
+  description,
+  answerOptions,
+  index,
+}: Question & { index: number }) => {
+  const [showDescription, setShowDescription] = useState(!!description);
+  const [showValidationOptions, setShowValidationOptions] = useState(() => {
+    if (answerOptions && Object.keys(answerOptions).length) return true;
+    return false;
+  }); // FIXME: Update based on stored options in question data
 
-const CreateQuestion = ({ title, id, answerType }: Question) => {
   const updateQuestionTitle = useCreateFormStore(
     (state) => state.updateQuestionTitle
   );
@@ -53,6 +33,13 @@ const CreateQuestion = ({ title, id, answerType }: Question) => {
     (state) => state.updateQuestionAnswerType
   );
   const deleteQuestion = useCreateFormStore((state) => state.deleteQuestion);
+  const duplicateQuestion = useCreateFormStore(
+    (state) => state.duplicateQuestion
+  );
+
+  const updateQuestionDescription = useCreateFormStore(
+    (state) => state.updateQuestionDescription
+  );
 
   const handleUpdateQuestionTitle = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -69,7 +56,23 @@ const CreateQuestion = ({ title, id, answerType }: Question) => {
     deleteQuestion(id);
   }, []);
 
+  const handleDuplicateQuestion = useCallback(() => {
+    duplicateQuestion(index);
+  }, [index]);
+
+  const toggleDescription = useCallback(() => {
+    setShowDescription((prev) => {
+      if (!prev === false) updateQuestionDescription(id, "");
+      return !prev;
+    });
+  }, []);
+
+  const toggleValidationOptions = useCallback(() => {
+    setShowValidationOptions((prev) => !prev);
+  }, []);
+
   const AnswerComponent = answerMap[answerType || "short-answer"].Component;
+  const AnswerValidationOptions = validationOptionMap[answerType];
 
   return (
     <Card
@@ -85,7 +88,7 @@ const CreateQuestion = ({ title, id, answerType }: Question) => {
             />
           </Col>
           <Col span={8}>
-            <AnswerOptions
+            <AnswerTypeSelect
               defaultValue={answerType || "short-answer"}
               onChange={handleAnswerTypeChange}
             />
@@ -94,7 +97,30 @@ const CreateQuestion = ({ title, id, answerType }: Question) => {
       }
     >
       <Card.Grid hoverable={false} style={{ width: "100%" }}>
-        <AnswerComponent />
+        {showDescription ? (
+          <>
+            <Input
+              maxLength={50}
+              placeholder="description"
+              value={description}
+              onChange={(e) => {
+                updateQuestionDescription(id, e.currentTarget.value);
+              }}
+            />
+            <Divider dashed style={{ marginBlock: 10 }} />
+          </>
+        ) : (
+          ""
+        )}
+        <AnswerComponent validationProps={answerOptions} />
+        {showValidationOptions ? (
+          <>
+            <Divider dashed style={{ marginBlock: 10 }} />
+            <AnswerValidationOptions />
+          </>
+        ) : (
+          ""
+        )}
       </Card.Grid>
       <Card.Grid
         hoverable={false}
@@ -104,7 +130,12 @@ const CreateQuestion = ({ title, id, answerType }: Question) => {
         <Row>
           <Col flex="auto" />
           <Col>
-            <Button type="text" icon={<CopyOutlined />} key="copy" />
+            <Button
+              type="text"
+              icon={<CopyOutlined />}
+              key="copy"
+              onClick={handleDuplicateQuestion}
+            />
           </Col>
 
           <Col style={{ display: "flex", alignItems: "center" }}>
@@ -126,9 +157,26 @@ const CreateQuestion = ({ title, id, answerType }: Question) => {
 
           <Col>
             <Popover
-              placement="topRight"
+              placement="bottomLeft"
+              arrow={false}
+              trigger="click"
               title="Options"
-              content={"Not yet implemented"}
+              content={
+                <AnswerOptionDropdown
+                  options={[
+                    {
+                      label: "Description",
+                      action: toggleDescription,
+                      active: showDescription,
+                    },
+                    {
+                      label: "Validation",
+                      action: toggleValidationOptions,
+                      active: showValidationOptions,
+                    },
+                  ]}
+                />
+              }
             >
               <Button type="text" icon={<EllipsisOutlined />} key="ellipsis" />
             </Popover>

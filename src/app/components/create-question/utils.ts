@@ -8,6 +8,11 @@ import {
   TimeAnswer,
   ColorAnswer,
 } from "./answer-type";
+import {
+  ParagraphValidation,
+  ShortAnswerValidation,
+} from "../question-validation";
+import { InputProps } from "antd";
 
 export type CreateQuestionProps = {
   title?: string;
@@ -23,7 +28,7 @@ export type AnswerOptionType = {
 type AnswerMap = {
   label: string;
   icon?: null; // FIXME: null for now
-  Component: () => JSX.Element;
+  Component: (props: any) => JSX.Element;
 };
 
 export const answerMap: {
@@ -43,5 +48,27 @@ export const answerMap: {
     label: "Color",
     icon: undefined,
     Component: ColorAnswer,
+  },
+};
+
+export const validationOptionMap: {
+  [key in AnswerType]: () => JSX.Element;
+} = {
+  "short-answer": ShortAnswerValidation,
+  "long-answer": ParagraphValidation,
+  "radio-answer": function (): JSX.Element {
+    throw new Error("Function not implemented.");
+  },
+  "checkbox-answer": function (): JSX.Element {
+    throw new Error("Function not implemented.");
+  },
+  "date-answer": function (): JSX.Element {
+    throw new Error("Function not implemented.");
+  },
+  "time-answer": function (): JSX.Element {
+    throw new Error("Function not implemented.");
+  },
+  "color-answer": function (): JSX.Element {
+    throw new Error("Function not implemented.");
   },
 };

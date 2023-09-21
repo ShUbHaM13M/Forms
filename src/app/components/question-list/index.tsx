@@ -7,8 +7,8 @@ const QuestionList = () => {
 
   return (
     <Space direction="vertical" style={{ width: "100%" }}>
-      {questions.map((question) => (
-        <CreateQuestion key={question.id} {...question} />
+      {questions.map((question, index) => (
+        <CreateQuestion key={question.id} {...question} index={index} />
       ))}
     </Space>
   );
