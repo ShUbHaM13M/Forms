@@ -1,3 +1,5 @@
+import { InputProps } from "antd";
+
 export type AnswerType =
   | "short-answer"
   | "long-answer"
@@ -10,5 +12,7 @@ export type AnswerType =
 export type Question = {
   id: string;
   title?: string;
+  description?: string;
   answerType: AnswerType;
+  answerOptions?: InputProps;
 };

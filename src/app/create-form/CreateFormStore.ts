@@ -12,7 +12,9 @@ interface CreateFormState {
 
   addQuestion: (question: Question) => void;
   deleteQuestion: (id: string) => void;
+  duplicateQuestion: (index: number) => void;
   updateQuestionTitle: (id: string, title: string) => void;
+  updateQuestionDescription: (id: string, description: string) => void;
   updateQuestionAnswerType: (id: string, answerType: AnswerType) => void;
 }
 
@@ -22,7 +24,12 @@ const useCreateFormStore = create<CreateFormState>((set) => ({
   questions: [
     {
       answerType: "short-answer",
+      description: "Hello World!",
       title: "Question 0",
+      answerOptions: {
+        minLength: 10,
+        showCount: true,
+      },
       id: uuidv4(),
     },
     {
@@ -52,11 +59,32 @@ const useCreateFormStore = create<CreateFormState>((set) => ({
       questions: questions.filter((question) => question.id !== id),
     })),
 
+  duplicateQuestion: (index) =>
+    set(({ questions }) => {
+      questions.splice(index, 0, {
+        ...questions[index],
+        id: uuidv4(),
+      });
+      return {
+        questions: [...questions],
+      };
+    }),
+
   updateQuestionTitle: (id, title) =>
     set(({ questions }) => ({
       questions: questions.map((question) => {
         if (question.id === id) {
           question.title = title;
+        }
+        return question;
+      }),
+    })),
+
+  updateQuestionDescription: (id, description) =>
+    set(({ questions }) => ({
+      questions: questions.map((question) => {
+        if (question.id === id) {
+          question.description = description;
         }
         return question;
       }),
