@@ -1,9 +1,12 @@
 import { Radio } from "antd";
 import ChoiceList from "./ChoiceList";
 
-const RadioAnswer = () => {
+const RadioAnswer = ({ questionIndex }: { questionIndex: number }) => {
   return (
-    <ChoiceList ChoiceType={<Radio style={{ pointerEvents: "none" }} />} />
+    <ChoiceList
+      questionIndex={questionIndex}
+      ChoiceType={<Radio style={{ pointerEvents: "none" }} />}
+    />
   );
 };
 

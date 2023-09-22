@@ -14,5 +14,6 @@ export type Question = {
   title?: string;
   description?: string;
   answerType: AnswerType;
-  answerOptions?: InputProps;
+  answerOptions?: { [key: string]: any };
+  validations?: InputProps;
 };

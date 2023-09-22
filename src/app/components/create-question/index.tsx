@@ -17,14 +17,14 @@ const CreateQuestion = ({
   id,
   answerType,
   description,
-  answerOptions,
+  validations,
   index,
 }: Question & { index: number }) => {
   const [showDescription, setShowDescription] = useState(!!description);
   const [showValidationOptions, setShowValidationOptions] = useState(() => {
-    if (answerOptions && Object.keys(answerOptions).length) return true;
+    if (validations && Object.keys(validations).length) return true;
     return false;
-  }); // FIXME: Update based on stored options in question data
+  });
 
   const updateQuestionTitle = useCreateFormStore(
     (state) => state.updateQuestionTitle
@@ -112,7 +112,7 @@ const CreateQuestion = ({
         ) : (
           ""
         )}
-        <AnswerComponent validationProps={answerOptions} />
+        <AnswerComponent validationProps={validations} questionIndex={index} />
         {showValidationOptions ? (
           <>
             <Divider dashed style={{ marginBlock: 10 }} />

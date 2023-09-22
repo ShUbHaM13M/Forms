@@ -13,9 +13,11 @@ interface CreateFormState {
   addQuestion: (question: Question) => void;
   deleteQuestion: (id: string) => void;
   duplicateQuestion: (index: number) => void;
+
   updateQuestionTitle: (id: string, title: string) => void;
   updateQuestionDescription: (id: string, description: string) => void;
   updateQuestionAnswerType: (id: string, answerType: AnswerType) => void;
+  updateQuestionOptions: (id: number, options: { [key: string]: any }) => void;
 }
 
 const useCreateFormStore = create<CreateFormState>((set) => ({
@@ -97,6 +99,16 @@ const useCreateFormStore = create<CreateFormState>((set) => ({
         return question;
       }),
     })),
+
+  updateQuestionOptions: (index, options) => {
+    set(({ questions }) => ({
+      questions: questions.map((question, questionIndex) => {
+        if (index === questionIndex)
+          question.answerOptions = { ...question.answerOptions, ...options };
+        return question;
+      }),
+    }));
+  },
 }));
 
 export default useCreateFormStore;

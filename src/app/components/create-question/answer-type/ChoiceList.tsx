@@ -1,20 +1,47 @@
 import { CloseOutlined } from "@ant-design/icons";
-import { Space, Input, Row, Col, Button, Tooltip, Radio, Checkbox } from "antd";
-import { useCallback, useState } from "react";
+import { Space, Input, Row, Col, Button, Tooltip } from "antd";
+import { useCallback, useEffect, useState } from "react";
 import { SortableList } from "../..";
 import { UniqueIdentifier } from "@dnd-kit/core";
 import { uuidv4 } from "../../sortable-list/utils";
+import useCreateFormStore from "@/app/create-form/CreateFormStore";
 
 type ChoiceOptionType = {
   id: UniqueIdentifier;
   label: string;
 };
 
-const ChoiceList = ({ ChoiceType }: { ChoiceType: React.ReactNode }) => {
-  const [options, setOptions] = useState<ChoiceOptionType[]>([
-    { id: uuidv4(), label: "Option 1" },
-  ]);
-  const [otherAdded, setOtherAdded] = useState(false);
+interface ChoiceListProps {
+  ChoiceType: React.ReactNode;
+  questionIndex: number;
+}
+
+const ChoiceList = ({ ChoiceType, questionIndex }: ChoiceListProps) => {
+  const _options = useCreateFormStore(
+    (state) => state.questions[questionIndex]?.answerOptions
+  );
+
+  const _updateOptions = useCreateFormStore(
+    (state) => state.updateQuestionOptions
+  );
+
+  const [options, setOptions] = useState<ChoiceOptionType[]>(
+    _options?.choices || [
+      {
+        id: uuidv4(),
+        label: "Option 1",
+      },
+    ]
+  );
+  const [otherAdded, setOtherAdded] = useState<boolean>(_options?.showOthers);
+
+  useEffect(() => {
+    _updateOptions(questionIndex, {
+      choices: options,
+      showOthers: otherAdded,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [options, otherAdded]);
 
   const onOptionLabelChange = useCallback((label: string, index: string) => {
     setOptions((prev) =>
