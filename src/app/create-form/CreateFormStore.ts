@@ -2,11 +2,13 @@ import { AnswerType, Question } from "../global";
 import { uuidv4 } from "../components/sortable-list/utils";
 import { create } from "zustand";
 
-interface CreateFormState {
+interface FormState {
   title: string;
   description: string;
   questions: Question[];
+}
 
+interface CreateFormState extends FormState {
   setTitle: (title: string) => void;
   setDescription: (description: string) => void;
 
@@ -18,9 +20,11 @@ interface CreateFormState {
   updateQuestionDescription: (id: string, description: string) => void;
   updateQuestionAnswerType: (id: string, answerType: AnswerType) => void;
   updateQuestionOptions: (id: number, options: { [key: string]: any }) => void;
+
+  getFormData: () => FormState;
 }
 
-const useCreateFormStore = create<CreateFormState>((set) => ({
+const useCreateFormStore = create<CreateFormState>((set, get) => ({
   title: "",
   description: "",
   questions: [
@@ -108,6 +112,15 @@ const useCreateFormStore = create<CreateFormState>((set) => ({
         return question;
       }),
     }));
+  },
+
+  getFormData: () => {
+    const { title, description, questions } = get();
+    return {
+      title,
+      description,
+      questions,
+    };
   },
 }));
 

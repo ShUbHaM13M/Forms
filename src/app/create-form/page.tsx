@@ -1,31 +1,14 @@
 "use client";
 
-import { Button, Layout, Space } from "antd";
-import { EyeOutlined } from "@ant-design/icons";
+import Header from "./Header";
+import { Layout, Space } from "antd";
 import FormMetaCard from "./FormMetaCard";
 import { QuestionList, ToolBar } from "../components";
 
 const CreateForm = () => {
   return (
-    <Layout className="layout">
-      <Layout.Header
-        style={{
-          position: "sticky",
-          top: 0,
-          zIndex: 1,
-          width: "100%",
-          display: "flex",
-          alignItems: "center",
-        }}
-      >
-        <Button
-          target="_blank"
-          href="/"
-          type="primary"
-          shape="circle"
-          icon={<EyeOutlined />}
-        />
-      </Layout.Header>
+    <Layout>
+      <Header />
       <Layout.Content className="container">
         <Space direction="vertical">
           <FormMetaCard />
