@@ -7,8 +7,13 @@ const Header = () => {
   const formData = useCreateFormStore(
     useCallback((state) => state.getFormData, [])
   );
-  const handleOnCreateClicked = () => {
-    console.log(formData());
+  const handleOnCreateClicked = async () => {
+    const res = await fetch("/api/form", {
+      method: "POST",
+      body: JSON.stringify(formData()),
+    });
+    const data = await res.json();
+    console.log(data);
   };
 
   return (

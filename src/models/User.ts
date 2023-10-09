@@ -1,49 +1,25 @@
-import {
-  ModelOptions,
-  Severity,
-  getModelForClass,
-  index,
-  post,
-  prop,
-} from "@typegoose/typegoose";
 import mongoose from "mongoose";
+const Schema = mongoose.Schema;
 
-@post<UserClass>("save", function (doc) {
-  if (doc) {
-    doc.id = doc._id.toString();
-    doc._id = doc.id;
-  }
-})
-@post<UserClass[]>(/^find/, function (docs) {
-  // @ts-ignore
-  if (this.op === "find") {
-    docs.forEach((doc) => {
-      doc.id = doc._id.toString();
-      doc._id = doc.id;
-    });
-  }
-})
-@ModelOptions({
-  schemaOptions: {
+const UserSchema = new Schema(
+  {
+    email: { type: String, unique: true, required: true },
+    password: { type: String, required: true },
+  },
+  {
     timestamps: true,
-    collection: "users",
+  }
+);
+
+UserSchema.set("toJSON", {
+  virtuals: true,
+  versionKey: false,
+  transform: function (doc, ret) {
+    delete ret._id;
+    delete ret.password;
   },
-  options: {
-    allowMixed: Severity.ALLOW,
-  },
-})
-@index({ email: 1 })
-class UserClass {
-  @prop({ required: true, unique: true })
-  email: string;
+});
 
-  @prop({ required: true })
-  password: string;
+const User = mongoose.models.User || mongoose.model("User", UserSchema);
 
-  _id: mongoose.Types.ObjectId | string;
-
-  id: string;
-}
-
-const User = mongoose.models.UserClass || getModelForClass(UserClass);
-export { User, UserClass };
+export { User };
