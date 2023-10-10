@@ -28,11 +28,14 @@ async function connectDB() {
   }
 
   if (!cached.promise) {
-    const opts: ConnectOptions = {
+    const opts = {
       bufferCommands: false,
-    };
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useCreateIndex: true,
+    } as ConnectOptions;
 
-    cached.promise = connect(MONGODB_URI!, opts)
+    cached.promise = connect(MONGODB_URI!, {})
       .then((mongoose) => {
         console.log("✅ New connection established");
         return mongoose;

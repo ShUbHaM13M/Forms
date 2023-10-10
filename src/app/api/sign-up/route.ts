@@ -2,7 +2,6 @@ import connectDB from "@/lib/connect-db";
 import { User } from "@/models/User";
 import bcrypt from "bcrypt";
 import { type NextRequest, NextResponse } from "next/server";
-import mongoose from "mongoose";
 
 function checkIncludesKey(data: Object, keys: string[]) {
   keys.forEach((key) => {
@@ -11,6 +10,11 @@ function checkIncludesKey(data: Object, keys: string[]) {
     }
   });
   return [true, null];
+}
+
+export async function GET() {
+  const user = await User.find({});
+  return NextResponse.json(user);
 }
 
 export async function POST(request: NextRequest) {
