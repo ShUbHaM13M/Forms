@@ -14,16 +14,22 @@
     "@dnd-kit/core": "^6.0.8",
     "@dnd-kit/modifiers": "^6.0.1",
     "@dnd-kit/sortable": "^7.0.2",
+    "@typegoose/typegoose": "^11.5.0",
     "@types/node": "20.5.9",
     "@types/react": "18.2.21",
     "@types/react-dom": "18.2.7",
     "antd": "^5.9.0",
+    "bcrypt": "^5.1.1",
     "eslint": "8.48.0",
     "eslint-config-next": "13.4.19",
+    "mongoose": "^7.5.3",
     "next": "13.4.19",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "typescript": "5.2.2",
     "zustand": "^4.4.1"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.0"
   }
 }
