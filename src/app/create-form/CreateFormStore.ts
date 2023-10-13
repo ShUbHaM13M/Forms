@@ -2,7 +2,7 @@ import { AnswerType, Question } from "../global";
 import { uuidv4 } from "../components/sortable-list/utils";
 import { create } from "zustand";
 
-interface FormState {
+export interface FormState {
   title: string;
   description: string;
   questions: Question[];
@@ -32,7 +32,7 @@ const useCreateFormStore = create<CreateFormState>((set, get) => ({
       answerType: "short-answer",
       description: "Hello World!",
       title: "Question 0",
-      answerOptions: {
+      validations: {
         minLength: 10,
         showCount: true,
       },

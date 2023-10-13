@@ -12,8 +12,12 @@ const Header = () => {
       method: "POST",
       body: JSON.stringify(formData()),
     });
-    const data = await res.json();
-    console.log(data);
+    if (res.ok) {
+      const data = await res.json();
+      console.log(data);
+    }
+    // FIXME: Error handling
+    console.log("Error: ");
   };
 
   return (

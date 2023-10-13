@@ -12,35 +12,40 @@ import {
 } from "antd";
 import theme from "../theme/themeConfig";
 import { Question } from "./components";
-import { QuestionType } from "./components/question";
+import { type Question as QuestionType } from "./global";
+import { uuidv4 } from "./components/sortable-list/utils";
 
 const questions: QuestionType[] = [
   {
+    id: uuidv4(),
     title: "Why VIM?",
-    answer: {
-      type: "short-answer",
-      inputProps: {
-        name: "why-vim",
-      },
+    answerType: "short-answer",
+    validations: {
+      name: "why-vim",
     },
   },
   {
+    id: uuidv4(),
     title: "Why Modal Editor?",
-    answer: {
-      type: "long-answer",
-      inputProps: {
-        name: "why-modal-editor",
-      },
+    answerType: "long-answer",
+    validations: {
+      name: "why-modal-editor",
+      placeholder: "Enter your answer",
     },
   },
   {
+    id: uuidv4(),
     title: "Select Your prefered Modal Editor",
-    answer: {
-      type: "option-answer",
-      options: ["Vim", "Helix", "Emacs"],
-      inputProps: {
-        name: "preferred-modal-editor",
-      },
+    answerType: "radio-answer",
+    answerOptions: {
+      choices: [
+        { id: uuidv4(), label: "Vim" },
+        { id: uuidv4(), label: "Emacs" },
+        { id: uuidv4(), label: "VS Code" },
+      ],
+    },
+    validations: {
+      name: "preferred-modal-editor",
     },
   },
 ];
@@ -60,7 +65,7 @@ export default function Home() {
           <Form form={form}>
             <Space direction="vertical" size="middle" style={{ width: "100%" }}>
               {questions.map((question) => (
-                <Question key={question.title} {...question} />
+                <Question key={question.title} question={question} />
               ))}
 
               <Row gutter={8} justify="end">

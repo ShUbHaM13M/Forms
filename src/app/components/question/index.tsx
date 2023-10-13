@@ -1,51 +1,33 @@
-import { Card, Form, Input, InputProps, Radio, Space } from "antd";
-import { TextAreaProps } from "antd/es/input";
+import { Question } from "@/app/global";
+import { Card, Form, Input, Radio, Space } from "antd";
+import { useEffect } from "react";
 
-type RequiredAttributes<T, K extends keyof T> = Required<Pick<T, K>>;
+function renderAnswerComponent(question: Question) {
+  let InputField: React.ReactElement = <>Not Yet Implemented!</>;
 
-interface AnswerTypeShort {
-  type: "short-answer";
-  inputProps: RequiredAttributes<InputProps, "name">;
-}
-
-interface AnswerTypeLong {
-  type: "long-answer";
-  inputProps: RequiredAttributes<TextAreaProps, "name">;
-}
-
-interface AnswerTypeOptions {
-  type: "option-answer";
-  options: string[];
-  inputProps: RequiredAttributes<InputProps, "name">;
-}
-
-export type AnswerType = AnswerTypeShort | AnswerTypeLong | AnswerTypeOptions;
-
-export type QuestionType = {
-  title: string;
-  answer: AnswerType;
-  isRequired?: boolean;
-};
-
-function renderAnswerComponent(answer: AnswerType) {
-  let InputField: React.ReactElement = <></>;
-
-  switch (answer.type) {
+  switch (question.answerType) {
     case "short-answer": {
-      InputField = <Input {...answer.inputProps} />;
+      console.log(question);
+      InputField = <Input name={question.title} {...question.validations} />;
       break;
     }
     case "long-answer": {
-      InputField = <Input.TextArea {...answer.inputProps} />;
+      InputField = (
+        <Input.TextArea name={question.title} {...question.validations} />
+      );
       break;
     }
-    case "option-answer": {
+    case "radio-answer": {
+      const options = question.answerOptions?.choices
+        ? question.answerOptions.choices
+        : [];
+
       InputField = (
-        <Radio.Group>
+        <Radio.Group name={question.title}>
           <Space direction="vertical">
-            {answer.options.map((option) => (
-              <Radio value={option} key={option}>
-                {option}
+            {options.map((option) => (
+              <Radio value={option.label} key={option.id}>
+                {option.label}
               </Radio>
             ))}
           </Space>
@@ -56,15 +38,12 @@ function renderAnswerComponent(answer: AnswerType) {
     default:
       break;
   }
-  return (
-    <Form.Item name={answer.inputProps.name} rules={[{ required: true }]}>
-      {InputField}
-    </Form.Item>
-  );
+  return <Form.Item rules={[{ required: true }]}>{InputField}</Form.Item>;
 }
 
-const Question = ({ answer, title, isRequired = true }: QuestionType) => {
-  return <Card title={title}>{renderAnswerComponent(answer)}</Card>;
+const Question = ({ question }: { question: Question }) => {
+  const Answer = renderAnswerComponent(question);
+  return <Card title={question.title}>{Answer}</Card>;
 };
 
 export default Question;
