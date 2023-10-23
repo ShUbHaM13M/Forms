@@ -23,8 +23,8 @@ export default function Home() {
   const { currentUser, logout } = useUserService();
 
   useEffect(() => {
-    // FIXME: Currently getting all the forms only get users form
     formService.getAllByUser();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function onCreateNewFormClick() {
@@ -51,10 +51,10 @@ export default function Home() {
           </div>
         </Layout.Header>
         <Layout.Content className="container">
-          <Row gutter={16}>
+          <Row gutter={[16, 16]}>
             {forms.map((form) => (
-              <Col key={form.id} span={8}>
-                <FormCard title={form.title} description={form.description} />
+              <Col key={form.id} span={12}>
+                <FormCard {...form} />
               </Col>
             ))}
           </Row>

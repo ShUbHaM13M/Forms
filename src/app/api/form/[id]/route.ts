@@ -7,10 +7,7 @@ async function GET(_request: Request, { params }: { params: { id: string } }) {
   try {
     await connectDB();
     const form = await Form.findById(params.id);
-    return NextResponse.json({
-      error: false,
-      form,
-    });
+    return form;
   } catch (error: any) {
     return NextResponse.json({ error: true, message: error.message });
   }

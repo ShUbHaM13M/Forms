@@ -1,28 +1,20 @@
 "use client";
 
-import { FormState } from "@/lib/CreateFormStore";
 import { ConfigProvider, Form, Layout, Space } from "antd";
 import theme from "@/theme/themeConfig";
 import { useEffect, useState } from "react";
 import { Question } from "@/app/_components";
-
-async function getForm(id: string) {
-  const res = await fetch(`/api/form/${id}`);
-  return await res.json();
-}
+import { useFormService } from "@/app/_services";
 
 export default function Page({ params }: { params: { id: string } }) {
   const [loading, setLoading] = useState(true);
-  const [form, setForm] = useState<(FormState & { id: string }) | null>(null);
+  const formService = useFormService();
+  const form = formService.forms[0];
+  console.log(form);
 
   useEffect(() => {
-    getForm(params.id).then((data) => {
-      if (data.error) {
-      } else {
-        setForm(data.form);
-      }
-      setLoading(false);
-    });
+    formService.getById(params.id).finally(() => setLoading(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.id]);
 
   if (loading) return <div>Loading...</div>;

@@ -17,6 +17,7 @@ async function GET() {
 
 async function POST(request: NextRequest) {
   const data = await request.json();
+  console.log(data);
   const form = await Form.create({
     ...data,
   });

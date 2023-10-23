@@ -27,8 +27,15 @@ export default function useFormService() {
     getAllByUser: async () => {
       try {
         const forms = await fetch.get("/api/form/user");
-        console.log(forms);
-        // formStore.setState({ forms });
+        formStore.setState({ forms });
+      } catch (error: any) {
+        console.error(error);
+      }
+    },
+    getById: async (id: string) => {
+      try {
+        const form = await fetch.get(`/api/form/${id}`);
+        formStore.setState({ forms: [form] });
       } catch (error: any) {
         console.error(error);
       }
