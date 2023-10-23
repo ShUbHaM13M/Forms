@@ -1,19 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Form } from "@/models/Form";
 import connectDB from "@/lib/connect-db";
+import apiHandler from "@/app/_helpers/server/api/api-handler";
 
 // TEST: Get all forms
-export async function GET() {
+async function GET() {
   try {
     await connectDB();
     const forms = await Form.find({});
-    return NextResponse.json(forms);
+    return forms;
   } catch (error) {
-    return NextResponse.json({ error });
+    console.log(error);
+    return NextResponse.json({ error }, { status: 500 });
   }
 }
 
-export async function POST(request: NextRequest) {
+async function POST(request: NextRequest) {
   const data = await request.json();
   const form = await Form.create({
     ...data,
@@ -24,3 +26,8 @@ export async function POST(request: NextRequest) {
     form,
   });
 }
+
+module.exports = apiHandler({
+  GET,
+  POST,
+});
