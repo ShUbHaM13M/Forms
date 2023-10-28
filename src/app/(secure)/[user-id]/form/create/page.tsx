@@ -1,24 +1,14 @@
 "use client";
 
-import Header from "../../../../_components/create-form-header";
-import { Layout, Space } from "antd";
-import FormMetaCard from "../../../../_components/form-meta-card";
-import { QuestionList, ToolBar } from "../../../../_components";
+import { useEffect } from "react";
+import CreateForm from "./CreateForm";
+import useCreateFormStore from "@/lib/CreateFormStore";
 
-const CreateForm = () => {
-  return (
-    <Layout>
-      <Header />
-      <Layout.Content className="container">
-        <Space direction="vertical">
-          <FormMetaCard />
-          <QuestionList />
-        </Space>
-
-        <ToolBar />
-      </Layout.Content>
-    </Layout>
-  );
-};
-
-export default CreateForm;
+export default function Page() {
+  const { setFormData } = useCreateFormStore();
+  useEffect(() => {
+    setFormData(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  return <CreateForm />;
+}

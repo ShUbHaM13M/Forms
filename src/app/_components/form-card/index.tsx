@@ -1,3 +1,4 @@
+import { useUserService } from "@/app/_services";
 import { Card } from "antd";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,8 +10,10 @@ interface FormCardProps {
 }
 
 const FormCard = ({ title, description, id }: FormCardProps) => {
+  const { currentUser } = useUserService();
+
   return (
-    <Link href={`form/${id}`}>
+    <Link href={`/${currentUser?.id}/form/create/${id}`}>
       <Card
         hoverable
         cover={

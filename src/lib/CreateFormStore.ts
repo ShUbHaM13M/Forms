@@ -22,38 +22,23 @@ interface CreateFormState extends FormState {
   updateQuestionOptions: (id: number, options: { [key: string]: any }) => void;
 
   getFormData: () => FormState;
+  setFormData: (form: FormState | null) => void;
 }
 
-const useCreateFormStore = create<CreateFormState>((set, get) => ({
-  title: "",
-  description: "",
+const initialState: FormState = {
+  title: "Form title",
+  description: "Form description",
   questions: [
     {
-      answerType: "short-answer",
-      description: "Hello World!",
+      id: uuidv4(),
       title: "Question 0",
-      validations: {
-        minLength: 10,
-        showCount: true,
-      },
-      id: uuidv4(),
-    },
-    {
-      answerType: "long-answer",
-      title: "Question 1",
-      id: uuidv4(),
-    },
-    {
-      answerType: "radio-answer",
-      title: "Question 2",
-      id: uuidv4(),
-    },
-    {
-      answerType: "checkbox-answer",
-      title: "Question 3",
-      id: uuidv4(),
+      answerType: "short-answer",
     },
   ],
+};
+
+const useCreateFormStore = create<CreateFormState>((set, get) => ({
+  ...initialState,
 
   setTitle: (title) => set(() => ({ title })),
   setDescription: (description) => set(() => ({ description })),
@@ -121,6 +106,11 @@ const useCreateFormStore = create<CreateFormState>((set, get) => ({
       description,
       questions,
     };
+  },
+
+  setFormData: (form) => {
+    if (form) set(form);
+    else set(initialState);
   },
 }));
 
