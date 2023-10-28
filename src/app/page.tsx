@@ -4,83 +4,68 @@ import {
   Button,
   Col,
   ConfigProvider,
-  Form,
+  FloatButton,
   Layout,
   Row,
-  Space,
   Typography,
 } from "antd";
 import theme from "../theme/themeConfig";
-import { Question } from "./components";
-import { QuestionType } from "./components/question";
-
-const questions: QuestionType[] = [
-  {
-    title: "Why VIM?",
-    answer: {
-      type: "short-answer",
-      inputProps: {
-        name: "why-vim",
-      },
-    },
-  },
-  {
-    title: "Why Modal Editor?",
-    answer: {
-      type: "long-answer",
-      inputProps: {
-        name: "why-modal-editor",
-      },
-    },
-  },
-  {
-    title: "Select Your prefered Modal Editor",
-    answer: {
-      type: "option-answer",
-      options: ["Vim", "Helix", "Emacs"],
-      inputProps: {
-        name: "preferred-modal-editor",
-      },
-    },
-  },
-];
+import { PlusOutlined } from "@ant-design/icons";
+import { useFormService, useUserService } from "./_services";
+import { useEffect } from "react";
+import { FormCard } from "./_components";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
-  const [form] = Form.useForm();
+  const formService = useFormService();
+  const forms = formService.forms;
+  const navigation = useRouter();
+  const { currentUser, logout } = useUserService();
+
+  useEffect(() => {
+    formService.getAllByUser();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  function onCreateNewFormClick() {
+    navigation.push(`${currentUser?.id}/form/create`);
+  }
 
   return (
     <ConfigProvider theme={theme}>
       <Layout className="layout">
-        {/* <Layout.Header>
+        <Layout.Header
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
           <Typography.Title level={3} style={{ color: "white" }}>
-            Create a new form
+            Forms
           </Typography.Title>
-        </Layout.Header> */}
+          <div>
+            <Button title="Logout" type="primary" onClick={logout}>
+              Logout
+            </Button>
+          </div>
+        </Layout.Header>
         <Layout.Content className="container">
-          <Form form={form}>
-            <Space direction="vertical" size="middle" style={{ width: "100%" }}>
-              {questions.map((question) => (
-                <Question key={question.title} {...question} />
-              ))}
+          <Row gutter={[16, 16]}>
+            {forms.map((form) => (
+              <Col key={form.id} span={12}>
+                <FormCard {...form} />
+              </Col>
+            ))}
+          </Row>
 
-              <Row gutter={8} justify="end">
-                <Col>
-                  <Button
-                    htmlType="reset"
-                    type="default"
-                    onClick={() => form.resetFields()}
-                  >
-                    Reset
-                  </Button>
-                </Col>
-                <Col>
-                  <Button htmlType="submit" type="primary">
-                    Submit
-                  </Button>
-                </Col>
-              </Row>
-            </Space>
-          </Form>
+          <FloatButton
+            shape="square"
+            type="primary"
+            tooltip="Create new Form"
+            icon={<PlusOutlined />}
+            onClick={onCreateNewFormClick}
+          />
         </Layout.Content>
       </Layout>
     </ConfigProvider>
